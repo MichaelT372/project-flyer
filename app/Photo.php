@@ -2,17 +2,24 @@
 
 namespace App;
 
-use Image;
 use Illuminate\Database\Eloquent\Model;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class Photo extends Model
 {
+    /**
+     * The associated table.
+     * 
+     * @var string
+     */
 	protected $table = 'flyer_photos';
 	
+    /**
+     * Fillable fields for a photo.
+     * 
+     * @var array
+     */
 	protected $fillable = ['path', 'name', 'thumbnail_path'];
-
-	protected $baseDir = 'flyer_uploads/photos';
 
 	/**
 	 * A photo belongs to a flyer.
@@ -24,33 +31,22 @@ class Photo extends Model
     	return $this->belongsTo('App\Flyer');
     }
 
-    public static function named($name)
+    /**
+     * Get the base directory for photo uploads
+     * 
+     * @return string
+     */
+    public function baseDir()
     {
-        return (new static)->saveAs($name);
+        return 'flyer_uploads/photos';
     }
 
-    protected function saveAs($name)
+    public function setNameAttribute($name)
     {
-        $this->name = sprintf("%s-%s", time(), $name);
-        $this->path = sprintf("%s/%s", $this->baseDir, $this->name);
-        $this->thumbnail_path = sprintf("%s/tn-%s", $this->baseDir, $this->name);
-        
-        return $this;
-    }
+        $this->attributes['name'] = $name;
 
-    public function move(UploadedFile $file)
-    {
-        $file->move($this->baseDir, $this->name);
+        $this->path = $this->baseDir() . '/' . $name;
 
-        $this->makeThumbnail();
-
-        return $this;
-    }
-
-    protected function makeThumbnail()
-    {
-        Image::make($this->path)
-            ->fit(200)
-            ->save($this->thumbnail_path);
+        $this->thumbnail_path = $this->baseDir() . '/tn-' . $name;
     }
 }

@@ -1,9 +1,5 @@
 <?php
 
-Route::get('/', function () {
-    return view('pages.home');
-});
-
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -16,8 +12,9 @@ Route::get('/', function () {
 */
 
 Route::group(['middleware' => ['web']], function () {
+	Route::get('/', 'PagesController@home');
     Route::resource('flyers', 'FlyersController');
     Route::get('{zip}/{street}', 'FlyersController@show');
-    Route::post('{zip}/{street}/photos', 'FlyersController@addPhoto');
+    Route::post('{zip}/{street}/photos', 'PhotosController@store');
     Route::auth();
 });
