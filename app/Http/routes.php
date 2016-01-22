@@ -17,4 +17,5 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('{zip}/{street}', 'FlyersController@show');
     Route::post('{zip}/{street}/photos', 'PhotosController@store');
     Route::auth();
+    Route::delete('photos/{id}', 'PhotosController@destroy');
 });

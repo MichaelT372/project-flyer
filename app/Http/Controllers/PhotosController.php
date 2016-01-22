@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Photo;
 use App\Flyer;
 use App\AddPhotoToFlyer;
 use App\Http\Controllers\Controller;
@@ -24,4 +25,17 @@ class PhotosController extends Controller
 
         (new AddPhotoToFlyer($flyer, $photo))->save();
     }
+
+    /**
+     * Delete a photo and its associated files
+     * 
+     * @param  $id
+     * @return void
+     */
+    public function destroy($id)
+    {
+        $photo = Photo::findOrFail($id)->delete();
+
+        return back();
+    }   
 }
